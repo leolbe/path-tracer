@@ -11,22 +11,22 @@
 
 
 
-static const auto white_material = Material(1, 0, false, 1, LightSpectrum::from_rgb(1, 1, 1, 1));
-static const auto red_material = Material(.9, -1, false, 1, LightSpectrum::from_rgb(1, 0, 0, 1));
-static const auto green_material = Material(.9, -1, false, 1, LightSpectrum::from_rgb(0, 1, 0, 1));
-static const auto blue_material = Material(.9, -1, false, 1, LightSpectrum::from_rgb(0, 0, 1, 1));
-static const auto cyan_material = Material(.9, -1, false, 1, LightSpectrum::from_rgb(0, 1, 1, 1));
-static const auto magenta_material = Material(.9, -1, false, 1, LightSpectrum::from_rgb(1, 0, 1, 1));
-static const auto yellow_material = Material(.9, -1, false, 1, LightSpectrum::from_rgb(1, 1, 0, 1));
+static const auto white_material = Material(1, 0, 1, LightSpectrum::from_rgb(1, 1, 1, 1));
+static const auto red_material = Material(.9, 0, 1, LightSpectrum::from_rgb(1, 0, 0, 1));
+static const auto green_material = Material(.9, 0, 1, LightSpectrum::from_rgb(0, 1, 0, 1));
+static const auto blue_material = Material(.9, 0, 1, LightSpectrum::from_rgb(0, 0, 1, 1));
+static const auto cyan_material = Material(.9, 0, 1, LightSpectrum::from_rgb(0, 1, 1, 1));
+static const auto magenta_material = Material(.9, 0, 1, LightSpectrum::from_rgb(1, 0, 1, 1));
+static const auto yellow_material = Material(.9, 0, 1, LightSpectrum::from_rgb(1, 1, 0, 1));
 
-static const auto metal_material = Material(.1, -1, false, 1, LightSpectrum());
-static const auto glass_material = Material(.15, -1, true, 1.5, LightSpectrum());
-static const auto non_refractive_glass_material = Material(.1, -1, true, 1, LightSpectrum());
-static const auto translucent_material = Material(.3, 2, true, 1.2, LightSpectrum::from_rgb(0, .7, 0, 1));
+static const auto metal_material = Material(.1, 0, 1, LightSpectrum());
+static const auto glass_material = Material(.15, -1, 1.5, LightSpectrum());
+static const auto non_refractive_glass_material = Material(.1, -1, 1, LightSpectrum());
+static const auto translucent_material = Material(.3, 2, 1.2, LightSpectrum::from_rgb(0, .7, 0, 1));
 
-static const auto completely_transparent_material = Material(0, -1, true, 1, LightSpectrum());
-static const auto completely_reflective_material = Material(0, -1, false, 1, LightSpectrum());
-static const auto transparent_reflective_material = Material(.5, -1, true, 1.2, LightSpectrum::from_rgb(1, 1, 1, 1));
+static const auto completely_transparent_material = Material(0, -1, 1, LightSpectrum());
+static const auto completely_reflective_material = Material(0, 0, 1, LightSpectrum());
+static const auto transparent_reflective_material = Material(.5, -1, 1.2, LightSpectrum::from_rgb(1, 1, 1, 1));
 
 void scenes::init_refraction_demo(Scene &scene, Matrix4x4 &projective_matrix) {
     scene.add_object(std::make_unique<SphereObject>(Vec3(0, 1000020, 0), 1000000, &white_material));

@@ -22,7 +22,6 @@ class Material {
 private:
     const double roughness;
     const double minus_inv_attenuation_length;
-    const bool transparent;
     const double refractive_index;
     const LightSpectrum emittance;
 
@@ -31,15 +30,13 @@ public:
      * @param roughness Must be in the range [0, 1]. Weighs how much light is absorbed/emitted as opposed to
      * refracted/reflected.
      * @param attenuation_length Must be either @c -1 or non-negative. Determines the travel length at which light is
-     * attenuated by a factor of 1/e. A value of @c -1 signifies no attenuation.
-     * @param transparent If @c true, light is refracted/reflected according to the Fresnel equations. Otherwise, all
-     * light is either reflected or absorbed.
+     * attenuated by a factor of 1/e. A value of @c -1 signifies no attenuation. A value of @c 0 signifies an
+     * entirely opaque material.
      * @param refractive_index Must be non-negative. Determines how light is refracted when passing from another
      * material according to Snell's law.
      * @param emittance Determines how much light is emitted, scaled by @c roughness.
      */
-    Material(double roughness, double attenuation_length, bool transparent,
-        double refractive_index, const LightSpectrum& emittance);
+    Material(double roughness, double attenuation_length, double refractive_index, const LightSpectrum& emittance);
 
     /**
      * Evaluates a light path by determining possible light paths from the point of incidence, and pushing them to the

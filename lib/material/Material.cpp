@@ -13,12 +13,15 @@
 
 
 
-Material::Material(const double roughness, const double attenuation_length, const bool transparent,
-    const double refractive_index, const LightSpectrum &emittance
+Material::Material(const double roughness, const double attenuation_length, const double refractive_index,
+    const LightSpectrum &emittance
 )
   : roughness(roughness),
-    minus_inv_attenuation_length(attenuation_length == -1 ? 0 : -1 / attenuation_length),
-    transparent(transparent),
+    minus_inv_attenuation_length(
+        attenuation_length > 0
+        ? -1 / attenuation_length
+        : (attenuation_length == 0 ? -1 : 0) // 0 => opaque, set to -1. -1 => transparent, set to 0.
+    ),
     refractive_index(refractive_index),
     emittance(emittance)
 {
@@ -136,7 +139,8 @@ void calc_refraction(const double refractive_index_quotient, const Vec3 &surface
             const double R_0 = std::pow((1 - refractive_index_quotient) / (1 + refractive_index_quotient), 2);
             out_reflection_coefficient = R_0 + (1 - R_0) * std::pow(1 - cos_i, 5);
         } else {
-            // Otherwise, approximate the coefficient to the mean of R_s and R_p (slower than Schlick's).
+            // Otherwise, approximate the coefficient to the mean of R_s and R_p by assuming unpolarized light (slower
+            // than Schlick's).
             double R_s;
             double R_p;
             fresnel_equations(refractive_index_quotient, cos_i, cos_t, R_s, R_p);
@@ -154,7 +158,7 @@ LightSpectrum Material::eval_path(const SceneObject *const object, RayStack &ray
 
     const double smoothness = 1 - roughness;
 
-    if (transparent) {
+    if (minus_inv_attenuation_length >= 0) {
         const Ray reflected_ray = {incident_ray.from, math_util::reflect(incident_ray.dir, surface_normal)};
         double reflection_factor = 0;
         Ray internal_ray = incident_ray;

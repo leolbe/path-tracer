@@ -12,8 +12,7 @@
 /**
  * Represents a 3D ray, with a starting point and direction.
  */
-class Ray {
-public:
+struct Ray {
     static const Ray X, Y, Z;
 
     Vec3 from, dir;

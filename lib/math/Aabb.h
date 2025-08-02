@@ -13,11 +13,10 @@
 /**
  * Axis-Aligned Bounding Box.
  */
-class Aabb {
-public:
+struct Aabb {
     static const Aabb UNIT;
 
-    const Vec3 min, max;
+    Vec3 min, max;
 
     /**
      * @param min The corner of the box with the minimal x, y, and z coordinate.

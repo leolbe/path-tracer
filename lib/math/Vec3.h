@@ -15,8 +15,7 @@
 /**
  * A 3D mathematical vector.
  */
-class Vec3 {
-public:
+struct Vec3 {
     static const Vec3 ZERO, ONE, X, Y, Z, MIN, MAX;
 
     double x, y, z;
@@ -25,7 +24,7 @@ public:
     Vec3(double x, double y, double z);
     Vec3(const Vec2 &xy, double z);
     Vec3(double x, const Vec2 &yz);
-    Vec3(double xyz);
+    explicit Vec3(double xyz);
 
     Vec3 operator+(const Vec3 &v) const;
     Vec3 operator+(double w) const;

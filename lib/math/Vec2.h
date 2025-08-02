@@ -12,14 +12,13 @@
 /**
  * A 2D mathematical vector.
  */
-class Vec2 {
-public:
+struct Vec2 {
     static const Vec2 ZERO, ONE, X, Y;
 
     double x, y;
 
     Vec2(double x, double y);
-    Vec2(double xy);
+    explicit Vec2(double xy);
 
     Vec2 operator+(Vec2 v) const;
     Vec2 operator+(double w) const;

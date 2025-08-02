@@ -117,8 +117,7 @@ namespace math_util {
     /**
      * Determines ray-triangle intersections using the Möller-Trumbore algorithm (see
      * <a href="https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm">
-     * Möller–Trumbore intersection algorithm - Wikipedia
-     * </a>).
+     * Möller–Trumbore intersection algorithm - Wikipedia</a>).
      *
      * Given ray origin f, direction d, and triangle vertices v₁, v₂, v₃:
      * @param o = v₁ - f

@@ -15,8 +15,8 @@ const Vec3 Vec3::ONE = {1, 1, 1};
 const Vec3 Vec3::X = {1, 0, 0};
 const Vec3 Vec3::Y = {0, 1, 0};
 const Vec3 Vec3::Z = {0, 0, 1};
-const Vec3 Vec3::MIN = {std::numeric_limits<double>::min()};
-const Vec3 Vec3::MAX = {std::numeric_limits<double>::max()};
+const Vec3 Vec3::MIN = Vec3(std::numeric_limits<double>::min());
+const Vec3 Vec3::MAX = Vec3(std::numeric_limits<double>::max());
 
 Vec3::Vec3(const Vec3 &v) = default;
 Vec3::Vec3(const double x, const double y, const double z) : x(x), y(y), z(z) {}

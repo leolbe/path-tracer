@@ -43,10 +43,11 @@ void Scene::init() {
         aabb_util::get_optimal_bvh_parameters(objects.size(), max_tree_height, min_leaf_size);
 
         aabb_bvh = std::make_unique<SceneObjectAabbBvh>(
-            std::span(objects),
+            std::move(objects),
             max_tree_height,
             min_leaf_size
         );
+        objects.clear();
     }
 }
 

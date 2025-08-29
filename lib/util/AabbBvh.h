@@ -9,6 +9,7 @@
 #include <span>
 #include <variant>
 #include <stack>
+#include <vector>
 
 #include "Axis.h"
 #include "../math/Aabb.h"
@@ -16,6 +17,9 @@
 #include "../math/Vec3.h"
 
 
+
+template<typename T>
+concept AabbBvhType = std::swappable<T>;
 
 template<typename Ops, typename T>
 concept AabbBvhOps = requires(const std::span<T> span, const T &object, const Ray &ray, double &min_dist, Vec3 &pos,
@@ -33,7 +37,7 @@ concept AabbBvhOps = requires(const std::span<T> span, const T &object, const Ra
  * @tparam T Any type.
  * @tparam Ops A type that defines some required operations on T, as defined by @c AabbBvhOps.
  */
-template<typename T, AabbBvhOps<T> Ops>
+template<AabbBvhType T, AabbBvhOps<T> Ops>
 class AabbBvh {
 public:
     struct Node {
@@ -71,7 +75,7 @@ private:
         explicit TraversalRecord(const Node &node);
     };
 
-    const std::span<T> objects;
+    std::vector<T> objects;
 
     std::unique_ptr<Node> root_node;
 
@@ -79,11 +83,11 @@ private:
 
 public:
     /**
-     * @param objects Non-owning view of the objects that are contained in this BVH.
+     * @param objects Owning collection of the objects that are contained in this BVH.
      * @param max_tree_height Limits the number of times a single node may be split.
      * @param min_leaf_size Limits the number of objects required in a leaf node to be split.
      */
-    AabbBvh(std::span<T> objects, uint32_t max_tree_height, uint32_t min_leaf_size);
+    AabbBvh(std::vector<T> &&objects, uint32_t max_tree_height, uint32_t min_leaf_size);
 
     /**
      * Find the nearest intersection with any object contained in the BVH.
@@ -92,7 +96,9 @@ public:
      * @param normal The intersection normal vector.
      * @param hit_object The object that was hit.
      */
-    void ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3 &normal, const T *&hit_object);
+    bool ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3 &normal, const T *&hit_object);
+
+    const std::vector<T>& get_objects() const;
 };
 
 

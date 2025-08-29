@@ -18,11 +18,11 @@
 
 
 
-template<typename T, AabbBvhOps<T> Ops>
+template<AabbBvhType T, AabbBvhOps<T> Ops>
 AabbBvh<T, Ops>::Node::Node(Connection connection, Aabb aabb)
   : connection(std::move(connection)), aabb(std::move(aabb)) {}
 
-template<typename T, AabbBvhOps<T> Ops>
+template<AabbBvhType T, AabbBvhOps<T> Ops>
 void AabbBvh<T, Ops>::Node::split(Axis axis) {
     if constexpr (DEBUG_ASSERTS)
         assert(std::holds_alternative<Leaf>(connection));
@@ -56,7 +56,7 @@ void AabbBvh<T, Ops>::Node::split(Axis axis) {
 /**
  * Split @c node until either the @c subtree_max_height reaches @c 0 or the leaves get smaller than @c min_leaf_size.
  */
-template<typename T, AabbBvhOps<T> Ops>
+template<AabbBvhType T, AabbBvhOps<T> Ops>
 void split_recursively(typename AabbBvh<T, Ops>::Node &node, const uint32_t subtree_max_height,
     const uint32_t min_leaf_size)
 {
@@ -94,9 +94,9 @@ void split_recursively(typename AabbBvh<T, Ops>::Node &node, const uint32_t subt
     split_recursively<T, Ops>(*children[1], subtree_max_height - 1, min_leaf_size);
 }
 
-template<typename T, AabbBvhOps<T> Ops>
-AabbBvh<T, Ops>::AabbBvh(const std::span<T> objects, const uint32_t max_tree_height, const uint32_t min_leaf_size)
-  : objects(objects),
+template<AabbBvhType T, AabbBvhOps<T> Ops>
+AabbBvh<T, Ops>::AabbBvh(std::vector<T> &&objects, const uint32_t max_tree_height, const uint32_t min_leaf_size)
+  : objects(std::move(objects)),
     root_node(std::make_unique<Node>(typename Node::Leaf(objects), Ops::wrap_aabb(objects))),
     traversal_stack(std::stack<TraversalRecord>())
 {
@@ -105,11 +105,11 @@ AabbBvh<T, Ops>::AabbBvh(const std::span<T> objects, const uint32_t max_tree_hei
     split_recursively<T, Ops>(*root_node, max_tree_height, min_leaf_size);
 }
 
-template<typename T, AabbBvhOps<T> Ops>
+template<AabbBvhType T, AabbBvhOps<T> Ops>
 AabbBvh<T, Ops>::TraversalRecord::TraversalRecord(const Node &node) : node(node), second_pass(false) {}
 
-template<typename T, AabbBvhOps<T> Ops>
-void AabbBvh<T, Ops>::ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3 &normal, const T *&hit_object) {
+template<AabbBvhType T, AabbBvhOps<T> Ops>
+bool AabbBvh<T, Ops>::ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3 &normal, const T *&hit_object) {
     while (!traversal_stack.empty())
         traversal_stack.pop();
 
@@ -124,6 +124,7 @@ void AabbBvh<T, Ops>::ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3
         std::signbit(ray.dir.z),
     };
 
+    bool hit = false;
     while (!traversal_stack.empty()) {
         TraversalRecord &current_record = traversal_stack.top();
         const Node &current_node = current_record.node;
@@ -138,6 +139,7 @@ void AabbBvh<T, Ops>::ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3
                 const bool outside_hit = Ops::ray_cast(object, ray, min_dist, pos, normal);
                 if (outside_hit) {
                     hit_object = &object;
+                    hit = true;
                 }
             }
             traversal_stack.pop();
@@ -166,6 +168,12 @@ void AabbBvh<T, Ops>::ray_cast(const Ray &ray, double &min_dist, Vec3 &pos, Vec3
                 traversal_stack.emplace(*next_node);
         }
     }
+    return hit;
+}
+
+template <AabbBvhType T, AabbBvhOps<T> Ops>
+const std::vector<T>& AabbBvh<T, Ops>::get_objects() const {
+    return objects;
 }
 
 

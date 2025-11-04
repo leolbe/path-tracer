@@ -1,5 +1,7 @@
 .idea/
-cmake-build-debug-mingw/
-cmake-build-debug/
+.vscode/
+
+build/
+
 out/
 obj/

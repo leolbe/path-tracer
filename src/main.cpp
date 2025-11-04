@@ -17,7 +17,7 @@
 int main() {
     auto scene = Scene(LightSpectrum::BLACK);
     Matrix4x4 projective_matrix;
-    scenes::init_glass_grid(scene, projective_matrix);
+    scenes::init_single_obj(scene, projective_matrix, "../obj/cow.obj");
 
     if constexpr (ENABLE_BVH_OPTIMIZATION) {
         time_util::start_stopwatch();
@@ -33,6 +33,6 @@ int main() {
     std::string render_time_string = time_util::format_stopwatch();
     std::cout << std::format("Rendered scene in {}\n", render_time_string);
 
-    const std::string output_path = buffer->write_png("../out/out.png");
-    std::cout << std::format("Output file to [{}]\n", output_path);
+    const std::string output_path = buffer->write_png("./out/out.png");
+    std::cout << std::format("Output file to:\n{}\n", output_path);
 }

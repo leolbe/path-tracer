@@ -38,17 +38,15 @@ void Scene::add_object(std::unique_ptr<SceneObject> &&object) {
 }
 
 void Scene::init() {
-    if constexpr (ENABLE_BVH_OPTIMIZATION) {
-        uint32_t max_tree_height, min_leaf_size;
-        aabb_util::get_optimal_bvh_parameters(objects.size(), max_tree_height, min_leaf_size);
+    uint32_t max_tree_height, min_leaf_size;
+    aabb_util::get_optimal_bvh_parameters(objects.size(), max_tree_height, min_leaf_size);
 
-        aabb_bvh = std::make_unique<SceneObjectAabbBvh>(
-            std::move(objects),
-            max_tree_height,
-            min_leaf_size
-        );
-        objects.clear();
-    }
+    aabb_bvh = std::make_unique<SceneObjectAabbBvh>(
+        std::move(objects),
+        max_tree_height,
+        min_leaf_size
+    );
+    objects.clear();
 }
 
 void Scene::iter_objects(void (*fn)(const std::unique_ptr<SceneObject>&)) const {
@@ -60,19 +58,8 @@ void Scene::iter_objects(void (*fn)(const std::unique_ptr<SceneObject>&)) const 
 void Scene::ray_cast(const Ray &ray, double &distance, Vec3 &pos, Vec3 &normal,
     const std::unique_ptr<SceneObject> *&hit_object) const
 {
-    if constexpr (ENABLE_BVH_OPTIMIZATION) {
-        if constexpr (DEBUG_ASSERTS)
-            assert(aabb_bvh != nullptr);
-        aabb_bvh->ray_cast(ray, distance, pos, normal, hit_object);
-    } else {
-        for (auto &object : objects) {
-            if (!object->possibly_intersects(ray))
-                continue;
-            const bool outside_hit = object->ray_cast_from_outside(ray, distance, pos, normal);
-            if (outside_hit) {
-                hit_object = &object;
-            }
-        }
-    }
+    if constexpr (DEBUG_ASSERTS)
+        assert(aabb_bvh != nullptr);
+    aabb_bvh->ray_cast(ray, distance, pos, normal, hit_object);
 }
 

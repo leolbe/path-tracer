@@ -19,12 +19,10 @@ int main() {
     Matrix4x4 projective_matrix;
     scenes::init_single_obj(scene, projective_matrix, "../obj/cow.obj");
 
-    if constexpr (ENABLE_BVH_OPTIMIZATION) {
-        time_util::start_stopwatch();
-        scene.init();
-        std::string init_time_string = time_util::format_stopwatch();
-        std::cout << std::format("Initialized BVH in {}\n", init_time_string);
-    }
+    time_util::start_stopwatch();
+    scene.init();
+    std::string init_time_string = time_util::format_stopwatch();
+    std::cout << std::format("Initialized BVH in {}\n", init_time_string);
 
     const auto buffer = std::make_unique<RenderBuffer>(OUTPUT_WIDTH, OUTPUT_HEIGHT, SAMPLE_GRID_SIZE);
 

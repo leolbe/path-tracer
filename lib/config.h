@@ -5,6 +5,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <cstddef>
+
 
 
 //////// OUTPUT QUALITY ////////
@@ -54,14 +56,6 @@ inline constexpr bool ENABLE_POLARIZATION = false;
 
 // simulate differences in diffraction of different frequencies of light
 inline constexpr bool ENABLE_DISPERSION = false;
-
-
-
-//////// OPTIMIZATION ////////
-
-// enable an optimization that partitions the scene objects into a tree
-// structure to accelerate ray intersection tests
-inline constexpr bool ENABLE_BVH_OPTIMIZATION = true;
 
 
 
